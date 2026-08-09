@@ -1,0 +1,9 @@
+{
+  "attestationOracle": "0x69e0F1E783661ae6EB65eD56CfA3AD2F9C38ad87",
+  "chainId": 10143,
+  "cvaPolicy": "0x7580182fd993175C04F35580d5418b71Bb943c1e",
+  "deployer": "0x3866c57EfbdB1888E097453110F6c9A64B9051b1",
+  "oracleMode": "mock",
+  "trustFlowPool": "0x3d48509923483B17F9Fb46F1ceDb01FfDa5311Bd",
+  "vUSD": "0x3C45E7451fB59E59a6d94628112F6D4Ada2bd9Ba"
+}

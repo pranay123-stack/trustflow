@@ -19,6 +19,22 @@ Built for the Cleanverse *Verified Finance* hackathon, DeFi track.
 
 ---
 
+## Deployed on Monad testnet
+
+Chain ID `10143` — live, seeded, and verifiable right now.
+
+| Contract | Address |
+|---|---|
+| **TrustFlowPool** | [`0x3d48509923483B17F9Fb46F1ceDb01FfDa5311Bd`](https://testnet.monadexplorer.com/address/0x3d48509923483B17F9Fb46F1ceDb01FfDa5311Bd) |
+| **vUSD** — CVA stablecoin | [`0x3C45E7451fB59E59a6d94628112F6D4Ada2bd9Ba`](https://testnet.monadexplorer.com/address/0x3C45E7451fB59E59a6d94628112F6D4Ada2bd9Ba) |
+| **CVACompliancePolicy** | [`0x7580182fd993175C04F35580d5418b71Bb943c1e`](https://testnet.monadexplorer.com/address/0x7580182fd993175C04F35580d5418b71Bb943c1e) |
+| **CVI attestation oracle** | [`0x69e0F1E783661ae6EB65eD56CfA3AD2F9C38ad87`](https://testnet.monadexplorer.com/address/0x69e0F1E783661ae6EB65eD56CfA3AD2F9C38ad87) |
+
+Seeded state: 250,000 vUSD supplied · 144,200 borrowed across five attested borrowers ·
+**57.68% utilization** · rates laddering 7.60% (tier 1) → 5.64% (tier 2) → 3.68% (tier 3).
+
+---
+
 ## The problem
 
 DeFi lending is stuck at overcollateralization. To borrow \$800 you must first lock \$1,000. That

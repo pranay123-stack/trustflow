@@ -10,11 +10,18 @@ export type DeploymentAddresses = {
 };
 
 export const generatedDeployments: Record<number, DeploymentAddresses> = {
+  "10143": {
+    "vUSD": "0x3C45E7451fB59E59a6d94628112F6D4Ada2bd9Ba",
+    "attestationOracle": "0x69e0F1E783661ae6EB65eD56CfA3AD2F9C38ad87",
+    "trustFlowPool": "0x3d48509923483B17F9Fb46F1ceDb01FfDa5311Bd",
+    "cvaPolicy": "0x7580182fd993175C04F35580d5418b71Bb943c1e",
+    "oracleMode": "mock"
+  },
   "31337": {
-    "vUSD": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-    "attestationOracle": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-    "trustFlowPool": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-    "cvaPolicy": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+    "vUSD": "0x0B306BF915C4d645ff596e518fAf3F9669b97016",
+    "attestationOracle": "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
+    "trustFlowPool": "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1",
+    "cvaPolicy": "0x9A676e781A523b5d0C0e43731313A708CB607508",
     "oracleMode": "mock"
   }
 };
