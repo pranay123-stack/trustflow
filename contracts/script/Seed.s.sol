@@ -15,21 +15,35 @@ import {TrustFlowPool} from "../src/TrustFlowPool.sol";
 /// Run after Deploy:
 ///   forge script script/Seed.s.sol --rpc-url http://127.0.0.1:8545 --broadcast
 contract Seed is Script {
-    // Well-known Anvil keys. Local demo only -- never used on a public network.
-    uint256 internal constant ANVIL_1 =
-        0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d;
-    uint256 internal constant ANVIL_2 =
-        0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a;
-    uint256 internal constant ANVIL_3 =
-        0x7c852118294e51e653712a81e05800f419141751be58f605c371e15141b007a6;
-    uint256 internal constant ANVIL_4 =
-        0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a;
-    uint256 internal constant ANVIL_5 =
-        0x8b3a350cf5c34c9194ca85829a2df0ec3153be0318b5e2d3348e872092edffba;
+    /// @dev secp256k1 curve order. Derived keys are reduced below it to stay valid.
+    uint256 internal constant SECP256K1_N =
+        0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141;
+
+    /// @notice Deterministic demo-borrower key for slot `index`.
+    ///
+    /// @dev These used to be Anvil's published keys, which broke on a real network: Monad
+    ///      testnet rejects transactions involving them with `reserve balance violation`,
+    ///      because everyone knows those private keys and they would be a spam vector.
+    ///
+    ///      Deriving instead keeps the seed reproducible -- the same index always yields the
+    ///      same borrower, so a demo looks identical on every run -- without colliding with
+    ///      any well-known account. These addresses only ever hold a small gas stipend and
+    ///      testnet vUSD, so publishing the derivation is harmless.
+    function _demoKey(uint256 index) internal pure returns (uint256) {
+        return (uint256(keccak256(abi.encodePacked("trustflow/demo-borrower/v1", index)))
+            % (SECP256K1_N - 1)) + 1;
+    }
 
     CVAStablecoin internal vusd;
     MockAttestationOracle internal oracle;
     TrustFlowPool internal pool;
+
+    /// @notice Native-token top-up each demo borrower receives so they can pay for their own
+    ///         `borrow()`. Ignored where accounts are already funded (e.g. Anvil).
+    /// @dev Sized against a real network, not a local one. A `borrow()` costs ~324k gas on Monad
+    ///      testnet, which at ~102 gwei is ~0.033 native tokens -- roughly 4x what the same call
+    ///      costs locally. 0.15 leaves room for a retry and for gas-price drift.
+    uint256 internal constant GAS_STIPEND = 0.15 ether;
 
     function run() external {
         _load();
@@ -46,15 +60,15 @@ contract Seed is Script {
         // is where the trust rebate separates the tiers instead of flooring them all at 2%.
 
         // --- Tier 3 institutional: large unsecured draws, no collateral posted ---
-        _attestAndBorrow(issuerPk, ANVIL_1, 3, 950, 45_000e18, "Institutional desk");
-        _attestAndBorrow(issuerPk, ANVIL_4, 3, 1000, 47_000e18, "Market maker");
-        _attestAndBorrow(issuerPk, ANVIL_5, 3, 900, 44_000e18, "Payments processor");
+        _attestAndBorrow(issuerPk, _demoKey(1), 3, 950, 45_000e18, "Institutional desk");
+        _attestAndBorrow(issuerPk, _demoKey(4), 3, 1000, 47_000e18, "Market maker");
+        _attestAndBorrow(issuerPk, _demoKey(5), 3, 900, 44_000e18, "Payments processor");
 
         // --- Verified retail: tier 2, mid score, moderate draw ---
-        _attestAndBorrow(issuerPk, ANVIL_2, 2, 700, 7_000e18, "Verified retail");
+        _attestAndBorrow(issuerPk, _demoKey(2), 2, 700, 7_000e18, "Verified retail");
 
         // --- Basic KYC: tier 1, small draw ---
-        _attestAndBorrow(issuerPk, ANVIL_3, 1, 400, 1_200e18, "Basic KYC");
+        _attestAndBorrow(issuerPk, _demoKey(3), 1, 400, 1_200e18, "Basic KYC");
 
         _logState();
     }
@@ -84,6 +98,15 @@ contract Seed is Script {
         oracle.issueAttestation(
             borrower, tier, score, true, uint64(block.timestamp + 365 days), bytes32(0)
         );
+
+        // Each demo borrower signs their own `borrow()`, so they need native gas. On Anvil these
+        // accounts are pre-funded and this is a no-op; on a real testnet they start empty and the
+        // whole seed fails at broadcast with an opaque "failed to estimate gas". Topping them up
+        // from the issuer makes the script chain-agnostic.
+        if (borrower.balance < GAS_STIPEND) {
+            (bool sent,) = borrower.call{value: GAS_STIPEND - borrower.balance}("");
+            require(sent, "gas stipend transfer failed");
+        }
         vm.stopBroadcast();
 
         uint256 max = pool.maxBorrowOf(borrower);
