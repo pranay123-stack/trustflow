@@ -1,0 +1,174 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-ink-950 text-slate-200 antialiased;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(109, 110, 245, 0.13), transparent),
+      radial-gradient(ellipse 60% 40% at 85% 10%, rgba(34, 201, 138, 0.07), transparent);
+    background-attachment: fixed;
+  }
+
+  /* Tabular figures everywhere numbers change -- stops the layout jittering as values tick. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-white/[0.06] bg-ink-900/70 shadow-card backdrop-blur-sm;
+  }
+
+  .card-head {
+    @apply flex items-center justify-between gap-3 border-b border-white/[0.05] px-5 py-4;
+  }
+
+  .card-title {
+    @apply text-sm font-semibold tracking-tight text-slate-100;
+  }
+
+  .card-sub {
+    @apply text-xs text-slate-500;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium
+           transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .btn-primary {
+    @apply btn bg-mint-500 text-ink-950 hover:bg-mint-400 active:scale-[0.985]
+           disabled:hover:bg-mint-500;
+  }
+
+  .btn-secondary {
+    @apply btn border border-white/10 bg-white/[0.04] text-slate-200 hover:bg-white/[0.08]
+           active:scale-[0.985];
+  }
+
+  .btn-ghost {
+    @apply btn text-slate-400 hover:bg-white/[0.05] hover:text-slate-200;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-white/10 bg-ink-950/60 px-3.5 py-2.5 text-sm
+           text-slate-100 outline-none transition placeholder:text-slate-600
+           focus:border-mint-500/50 focus:ring-2 focus:ring-mint-500/15;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px]
+           font-medium leading-none;
+  }
+
+  .stat-label {
+    @apply text-[11px] font-medium uppercase tracking-wider text-slate-500;
+  }
+
+  .stat-value {
+    @apply tnum text-lg font-semibold text-slate-100;
+  }
+}
+
+/* Range slider -- restyled because the native control looks wrong on a dark fintech surface. */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    #22c98a 0%,
+    #22c98a var(--range-progress, 0%),
+    rgba(255, 255, 255, 0.09) var(--range-progress, 0%),
+    rgba(255, 255, 255, 0.09) 100%
+  );
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 18px;
+  width: 18px;
+  margin-top: -6px;
+  border-radius: 999px;
+  background: #eafff5;
+  border: 3px solid #12a874;
+  box-shadow: 0 0 0 4px rgba(34, 201, 138, 0.16);
+  transition: box-shadow 0.15s ease;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 7px rgba(34, 201, 138, 0.2);
+}
+
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+input[type="range"]::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: #22c98a;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 18px;
+  width: 18px;
+  border-radius: 999px;
+  background: #eafff5;
+  border: 3px solid #12a874;
+}
+
+input[type="range"]:disabled::-webkit-slider-thumb {
+  border-color: #3d4a6e;
+  background: #64748b;
+  box-shadow: none;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.09);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.16);
+  background-clip: content-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

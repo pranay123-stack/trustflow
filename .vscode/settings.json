@@ -1,0 +1,21 @@
+{
+  "solidity.packageDefaultDependenciesContractsDirectory": "",
+  "solidity.packageDefaultDependenciesDirectory": "contracts/lib",
+  "solidity.remappings": [
+    "forge-std/=contracts/lib/forge-std/src/",
+    "@openzeppelin/contracts/=contracts/lib/openzeppelin-contracts/contracts/"
+  ],
+  "solidity.compileUsingRemoteVersion": "v0.8.24",
+  "solidity.formatter": "forge",
+  "files.exclude": {
+    "**/cache": true,
+    "**/out": true
+  },
+  "search.exclude": {
+    "contracts/lib": true,
+    "contracts/out": true,
+    "contracts/broadcast": true,
+    "web/.next": true,
+    "**/node_modules": true
+  }
+}
